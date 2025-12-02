@@ -1,59 +1,107 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel API Auth Kit
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A starter kit that gives you a quick and clean setup for building APIs in Laravel.  
+You can use it with Next.js, React, mobile apps or any frontend framework.
 
-## About Laravel
+This kit includes authentication out of the box and supports creating additional modules for your API.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Features
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Fast setup to start building APIs  
+- Built-in authentication using **Laravel Sanctum**  
+- Pre-built Auth module with:
+  - Register  
+  - Login  
+  - Get current user (me)  
+  - Logout  
+- Modular structure for clean and scalable API development  
+- Full compatibility with the **Laravel Module Generator** package
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Module Generator Integration
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+This repository uses the **Laravel Module Generator** to structure the Auth module.  
+You can use the same package to generate your own modules.
 
-## Laravel Sponsors
+**Module Generator Package:**  
+https://github.com/frahjokhio/laravel-module-generator
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+The generator creates everything for you, including controllers, services, repositories, requests, models, migrations and route files.
 
-### Premium Partners
+When your module is generated, you will find its routes here:
+```
+app/Modules/{ModuleName}/routes/api.php
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+To protect your module’s routes with authentication, wrap them inside the Sanctum middleware:
 
-## Contributing
+```php
+Route::middleware('auth:sanctum')->group(function () {
+    // api routes
+});
+```
+## What You Get Out of the Box
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+After installing the kit:
 
-## Code of Conduct
+- Authentication is ready to use
+- API routes for register, login, me and logout already exist
+- You can immediately start creating new API modules with the generator
+- Clean separation of logic so your project stays organized as it grows
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```
+git clone https://github.com/frahjokhio/laravel-api-auth-kit.git
+cd laravel-api-auth-kit
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Authentication Endpoints
 
-## License
+Base path: `/api/auth`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Endpoint    | Method | Description                     |
+|-------------|--------|---------------------------------|
+| `/register` | POST   | Create a new user               |
+| `/login`    | POST   | Login user                      |
+| `/me`       | GET    | Get current authenticated user  |
+| `/logout`   | POST   | Logout user                     |
+
+All protected endpoints use auth:sanctum.
+
+---
+
+## Creating Your Own Modules
+
+Generate a new module:
+
+```
+php artisan make:module Product
+```
+
+Add Sanctum protection in your module’s route file:
+```
+app/Modules/Product/routes/api.php
+```
+
+```
+Route::middleware('auth:sanctum')->group(function () {
+    // product routes
+    Route::apiResource(strtolower('Product'), ProductController::class);
+});
+```
+
+Your module is ready.
+
+---
+
+### License
+
+MIT
